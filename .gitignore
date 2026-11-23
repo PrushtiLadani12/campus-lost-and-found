@@ -1,0 +1,26 @@
+# Security: Never commit private keys or environment secrets
+*.pem
+*.key
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Local databases & uploads
+*.db
+*.sqlite3
+data/
+storage/
+/tmp/
+
+# OS files
+.DS_Store
+Thumbs.db

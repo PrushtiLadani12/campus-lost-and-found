@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Lost & Found | Cloud-Native Platform</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <span class="logo-icon">🔍</span>
+        <div>
+          <h1>Campus Lost & Found</h1>
+          <p class="tagline">Cloud-Native Tracking Portal</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="btn btn-secondary" onclick="openModal('lost')">+ Report Lost Item</button>
+        <button class="btn btn-primary" onclick="openModal('found')">+ Report Found Item</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cloud Infrastructure Banner (Professor Rubric Showcase) -->
+  <section class="cloud-banner">
+    <div class="cloud-banner-inner">
+      <span class="cloud-badge">☁️ Live Cloud Architecture</span>
+      <span class="cloud-item"><strong>VM:</strong> EC2 t3.micro (Ubuntu/Nginx)</span>
+      <span class="cloud-item"><strong>Containers:</strong> Docker OCI</span>
+      <span class="cloud-item"><strong>Storage:</strong> Decoupled S3</span>
+      <span class="cloud-item"><strong>Database:</strong> RDS PostgreSQL</span>
+      <span class="cloud-item"><strong>Event-Driven:</strong> AWS Lambda</span>
+    </div>
+  </section>
+
+  <!-- Search & Filter Controls -->
+  <main class="main-container">
+    <section class="controls-section">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search keywords (e.g. laptop, keys, student ID, airpods)..." oninput="debounceSearch()">
+      </div>
+      <div class="filter-group">
+        <select id="typeFilter" onchange="fetchItems()">
+          <option value="all">All Types</option>
+          <option value="found">Found Items (Available)</option>
+          <option value="lost">Lost Reports</option>
+        </select>
+        <select id="categoryFilter" onchange="fetchItems()">
+          <option value="all">All Categories</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Cards & IDs">Cards & IDs</option>
+          <option value="Keys">Keys</option>
+          <option value="Bags & Wallets">Bags & Wallets</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Books & Stationery">Books & Stationery</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Items Grid -->
+    <section class="items-grid" id="itemsGrid">
+      <div class="loading">Loading items from cloud backend...</div>
+    </section>
+  </main>
+
+  <!-- Modal for Reporting an Item -->
+  <div class="modal-backdrop" id="reportModal" style="display: none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">Report Item</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="itemForm" onsubmit="submitItem(event)">
+        <input type="hidden" id="formItemType" value="found">
+        
+        <div class="form-group">
+          <label for="formTitle">Item Name *</label>
+          <input type="text" id="formTitle" required placeholder="e.g. Black Dell Laptop Charger">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="formCategory">Category *</label>
+            <select id="formCategory" required>
+              <option value="Electronics">Electronics</option>
+              <option value="Cards & IDs">Cards & IDs</option>
+              <option value="Keys">Keys</option>
+              <option value="Bags & Wallets">Bags & Wallets</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Books & Stationery">Books & Stationery</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="formLocation">Location *</label>
+            <input type="text" id="formLocation" required placeholder="e.g. Library 2nd Floor">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="formDescription">Description</label>
+          <textarea id="formDescription" rows="3" required placeholder="Color, stickers, distinctive marks, or where it was handed in..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="formContact">Contact Email / Phone *</label>
+          <input type="text" id="formContact" required placeholder="e.g. student@campus.edu">
+        </div>
+
+        <div class="form-group">
+          <label for="formPhoto">Item Photo (S3 Decoupled Storage)</label>
+          <input type="file" id="formPhoto" accept="image/*">
+          <small class="help-text">Image is uploaded to cloud object storage and processed by serverless Lambda.</small>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Submit & Upload to Cloud</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Campus Lost & Found — Cloud Computing Course Project | Team: Prushti Alpeshbhai Ladani & Jeetkumar Damodar Kaneriya</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

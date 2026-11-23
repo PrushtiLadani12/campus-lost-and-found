@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # Backend API Microservice
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: campus_lost_found_api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - STORAGE_MODE=cloud_decoupled
+      - DATABASE_URL=sqlite:///data/campus.db
+    volumes:
+      # Named volume demonstration for Session 4 (Storage outside container)
+      - app_data:/app/data
+      - app_uploads:/tmp/campus_lost_found_storage
+    restart: always
+
+  # Frontend Web UI Microservice
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: campus_lost_found_web
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  app_data:
+  app_uploads:
