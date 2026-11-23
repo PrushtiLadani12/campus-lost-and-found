@@ -4,7 +4,7 @@
 > **Group Members:**
 > 1. **Prushti Alpeshbhai Ladani**
 > 2. **Jeetkumar Damodar Kaneriya**  
-> **Repository:** [GitHub / GitLab link]  
+> **Repository:** [https://github.com/PrushtiLadani12/campus-lost-and-found](https://github.com/PrushtiLadani12/campus-lost-and-found)  
 > **Live Demo URL:** [http://13.53.117.78](http://13.53.117.78)  
 > **Health Check Endpoint:** [http://13.53.117.78/healthz](http://13.53.117.78/healthz)  
 > **API Cloud Status:** [http://13.53.117.78/api/cloud-status](http://13.53.117.78/api/cloud-status)  
