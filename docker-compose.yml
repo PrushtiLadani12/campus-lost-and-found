@@ -1,25 +1,39 @@
 version: '3.8'
 
 services:
-  # Backend API Microservice
-  backend:
+  # Session 5: Replicated Backend Node 1 (Self-Healing Architecture)
+  backend1:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: campus_lost_found_api
-    ports:
-      - "8000:8000"
+    container_name: campus_lost_found_api_1
     environment:
-      - ENVIRONMENT=development
-      - STORAGE_MODE=cloud_decoupled
+      - INSTANCE_ID=backend-node-1
+      - ENVIRONMENT=production
       - DATABASE_URL=sqlite:///data/campus.db
+      - UPLOAD_DIR=/app/storage
     volumes:
-      # Named volume demonstration for Session 4 (Storage outside container)
       - app_data:/app/data
-      - app_uploads:/tmp/campus_lost_found_storage
+      - app_storage:/app/storage
     restart: always
 
-  # Frontend Web UI Microservice
+  # Session 5: Replicated Backend Node 2 (High Availability & Failover)
+  backend2:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: campus_lost_found_api_2
+    environment:
+      - INSTANCE_ID=backend-node-2
+      - ENVIRONMENT=production
+      - DATABASE_URL=sqlite:///data/campus.db
+      - UPLOAD_DIR=/app/storage
+    volumes:
+      - app_data:/app/data
+      - app_storage:/app/storage
+    restart: always
+
+  # Session 4: Ingress Gateway & Load Balancer (Nginx)
   frontend:
     build:
       context: ./frontend
@@ -28,9 +42,10 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - backend
+      - backend1
+      - backend2
     restart: always
 
 volumes:
   app_data:
-  app_uploads:
+  app_storage:

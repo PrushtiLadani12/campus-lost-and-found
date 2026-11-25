@@ -8,7 +8,24 @@ let searchTimeout = null;
 // Initial load
 document.addEventListener("DOMContentLoaded", () => {
   fetchItems();
+  checkActiveNode();
 });
+
+async function checkActiveNode() {
+  const nodeSpan = document.getElementById("activeNode");
+  if (!nodeSpan) return;
+  try {
+    const res = await fetch(`${API_BASE}/healthz`);
+    if (res.ok) {
+      const data = await res.json();
+      nodeSpan.textContent = data.served_by || "online";
+      nodeSpan.style.color = "#4ade80";
+    }
+  } catch (e) {
+    nodeSpan.textContent = "Failover Mode";
+    nodeSpan.style.color = "#f87171";
+  }
+}
 
 function debounceSearch() {
   clearTimeout(searchTimeout);
