@@ -61,28 +61,29 @@ docker compose up --build
   - *Prushti:* Implemented S3 image upload and presigned URL retrieval in API.
   - *Jeetkumar:* Configured S3 bucket security policies, CORS rules, and VM public IP routing.
 
-### Week 5 (Session 5): Orchestration
-- **What we built:** Deployed containers using a managed container platform (AWS ECS / Cloud Run / k3s).
-- **Why:** Automates process restarts, health monitoring, and scaling without manual Docker CLI intervention.
+### Week 5 (Session 5): Orchestration & High Availability Failover
+- **What we built:** Deployed replicated container microservices (`backend1` and `backend2`) behind an Nginx upstream reverse-proxy load balancer with automated health failover (`proxy_next_upstream`) and Docker `restart: always`.
+- **Why:** Automates process restarts, health monitoring, and scaling. Demonstrated self-healing by stopping one container live while the service survived with zero downtime.
 - **Contributions:**
-  - *Prushti:* Authored container task definitions and container health check endpoints.
-  - *Jeetkumar:* Configured auto-recovery, container resource limits, and ingress routing.
+  - *Prushti:* Authored container task definitions and container health check endpoints (`/healthz`).
+  - *Jeetkumar:* Configured Nginx upstream load balancing, auto-recovery, and live container kill testing.
 
-### Week 6–7 (Sessions 6 & 7): Managed Database & Serverless Events
+### Week 6–7 (Sessions 6 & 7): Managed Database, RPO/RTO & Serverless Events
 - **What we built:**
-  1. Migrated database to Amazon RDS PostgreSQL (db.t3.micro).
-  2. Implemented an event-driven AWS Lambda function triggered on image upload to S3.
-- **Why:** Offloads database patch management, replication, and automated backups. The Lambda function decouples image thumbnail generation and notification processing from the user-facing web request thread.
+  1. Configured managed database schema with automated snapshots:
+     - **RPO (Recovery Point Objective):** 1 hour (hourly automated snapshot).
+     - **RTO (Recovery Time Objective):** 15 minutes (re-provisioning from snapshot).
+     - **Replica vs. Backup:** Replicas provide real-time high availability; backups protect against data corruption and human error (`DROP TABLE`).
+  2. Implemented event-driven AWS Lambda pipeline triggered on S3 image upload with **retries (exponential backoff)** and **idempotency** (deduplication via unique item UUIDs).
 - **Contributions:**
-  - *Prushti:* Provisioned RDS managed database, configured private subnet and database schema.
-  - *Jeetkumar:* Wrote the serverless Lambda function for S3 upload events and keyword matching.
+  - *Prushti:* Provisioned RDS database architecture, RPO/RTO planning, and replica vs. backup documentation.
+  - *Jeetkumar:* Designed the idempotent serverless Lambda handler with retry mechanisms for S3 upload events.
 
-### Week 8 (Session 8): Security Audit, Secrets & Cost Analysis
-- **What we built:** Hardened IAM roles, moved database credentials to Secrets Manager / Parameter Store, and set up billing alarms.
-- **Why:** Prepares the system for production-readiness review and prevents accidental cloud overages.
+### Week 8 (Session 8): Security Audit, Secrets & Hidden Cost Analysis
+- **What we built:** Hardened IAM roles, moved database credentials to Secrets Manager / Parameter Store, and performed a comprehensive cost model including **hidden cloud costs** (outbound data egress, NAT gateway idle fees, and orphaned EBS volumes).
 - **Contributions:**
-  - *Prushti:* Performed the security audit, least-privilege IAM review, and secret parameter isolation.
-  - *Jeetkumar:* Developed the 100 vs. 10,000 user monthly cost model, configured \$1.00 budget alerts, and finalized the end-to-end demo.
+  - *Prushti:* Conducted the security audit, least-privilege IAM review, and secret parameter isolation.
+  - *Jeetkumar:* Modeled the 100 vs. 10,000 user monthly costs, identified hidden cloud charges, and configured \$1.00 budget alerts.
 
 ---
 
