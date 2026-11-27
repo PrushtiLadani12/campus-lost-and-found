@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Session 5: Replicated Backend Node 1 (Self-Healing Architecture)
+  # Session 5: Replicated Backend Node 1 (172.20.0.10)
   backend1:
     build:
       context: ./backend
@@ -15,9 +15,12 @@ services:
     volumes:
       - app_data:/app/data
       - app_storage:/app/storage
+    networks:
+      campus_net:
+        ipv4_address: 172.20.0.10
     restart: always
 
-  # Session 5: Replicated Backend Node 2 (High Availability & Failover)
+  # Session 5: Replicated Backend Node 2 (172.20.0.20)
   backend2:
     build:
       context: ./backend
@@ -31,6 +34,9 @@ services:
     volumes:
       - app_data:/app/data
       - app_storage:/app/storage
+    networks:
+      campus_net:
+        ipv4_address: 172.20.0.20
     restart: always
 
   # Session 4: Ingress Gateway & Load Balancer (Nginx)
@@ -44,7 +50,17 @@ services:
     depends_on:
       - backend1
       - backend2
+    networks:
+      campus_net:
+        ipv4_address: 172.20.0.5
     restart: always
+
+networks:
+  campus_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
 
 volumes:
   app_data:
